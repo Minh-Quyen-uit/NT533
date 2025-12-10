@@ -21,23 +21,29 @@ pipeline {
 
         stage('2. Deploy to AWS EKS') {
             steps {
-                withCredentials([file(credentialsId: KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG_FILE')]) {
+                withCredentials([
+                    file(credentialsId: KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG_FILE'),
+                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+
                     sh """
-                        echo "-> Đang triển khai ${IMAGE_REPO}:${IMAGE_TAG} lên EKS Cluster..."
+                    echo "-> Triển khai ${IMAGE_REPO}:${IMAGE_TAG} lên AWS EKS..."
 
-                        export KUBECONFIG=$KUBECONFIG_FILE
+                    export KUBECONFIG=$KUBECONFIG_FILE
+                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                    export AWS_REGION=us-east-1
 
-                        # 1. Cập nhật lại image trong deployment.yaml
-                        sed -i 's|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|g' ${K8S_DEPLOY_FILE}
+                    # Cập nhật image
+                    sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" ${K8S_DEPLOY_FILE}
 
-                        # 2. Áp dụng lên EKS
-                        kubectl apply -f ${K8S_DEPLOY_FILE}
-                        kubectl apply -f ${K8S_SERVICE_FILE}
+                    # Apply lên EKS
+                    kubectl apply -f ${K8S_DEPLOY_FILE}
+                    kubectl apply -f ${K8S_SERVICE_FILE}
 
-                        # 3. Chờ rollout xong
-                        kubectl rollout status deployment/myservice-ui
-
-                        echo "Triển khai thành công!"
+                    kubectl rollout status deployment/myservice-ui
+                    echo "[OK] Triển khai thành công lên EKS!"
                     """
                 }
             }
