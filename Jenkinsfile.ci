@@ -1,0 +1,64 @@
+// Pipeline CI: Tích hợp, Test, Build Image và đẩy lên Docker Hub
+pipeline {
+    agent any
+
+    // Định nghĩa các biến môi trường
+    environment {
+        REGISTRY_URL = "docker.io"
+        IMAGE_REPO   = "minhquyen1325/nt533group2" // Repository Docker Hub của bạn
+        // Tag phiên bản: 1.0. [Số Build]
+        IMAGE_TAG    = "1.0.${env.BUILD_NUMBER}"  
+        DOCKERHUB_CREDENTIAL_ID = 'dockerhub-credentials'
+    }
+
+    stages {
+        stage('1. Checkout Code') {
+            steps {
+                echo "-> Bắt đầu: Lấy mã nguồn từ Git..."
+                checkout scm 
+            }
+        }
+
+        stage('2. Build & Test') {
+            steps {
+                echo "-> Bắt đầu: Cài đặt Dependencies và chạy Test..."
+                // Cài đặt dependencies
+                sh 'npm ci' 
+                // Chạy test (npm test)
+                sh 'npm test' 
+                echo "Kết thúc giai đoạn CI: Build và Test thành công."
+            }
+        }
+
+        stage('3. Build Docker Image') {
+            steps {
+                echo "-> Xây dựng Docker Image với tag: ${IMAGE_TAG}"
+                sh "docker build -t ${IMAGE_REPO}:${IMAGE_TAG} ."
+            }
+        }
+
+        stage('4. Push Docker Image to Docker Hub') {
+            steps {
+                // Sử dụng credentials Docker Hub đã lưu trong Jenkins
+                withCredentials([usernamePassword(
+                    credentialsId: DOCKERHUB_CREDENTIAL_ID, 
+                    usernameVariable: 'DOCKER_USER', 
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh """
+                      echo "-> Đang đăng nhập Docker Hub và đẩy Image..."
+                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin ${REGISTRY_URL}
+                      
+                      // Đẩy image với tag phiên bản (1.0.X)
+                      docker push ${IMAGE_REPO}:${IMAGE_TAG}
+                      
+                      // Gắn thêm tag 'latest' cho image này và đẩy lên
+                      docker tag ${IMAGE_REPO}:${IMAGE_TAG} ${IMAGE_REPO}:latest
+                      docker push ${IMAGE_REPO}:latest
+                      echo "Image ${IMAGE_TAG} đã được đẩy lên Docker Hub."
+                    """
+                }
+            }
+        }
+    }
+}

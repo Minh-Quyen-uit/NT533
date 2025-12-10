@@ -1,0 +1,50 @@
+// Pipeline CD: Triển khai lên AWS EKS
+pipeline {
+    agent any
+
+    // Định nghĩa các biến môi trường
+    environment {
+        IMAGE_REPO   = "minhquyen1325/nt533group2"
+        // Lấy tag latest để triển khai bản build mới nhất
+        IMAGE_TAG    = "latest" 
+        K8S_DEPLOY_FILE = "k8s/deployment.yaml"
+        K8S_SERVICE_FILE = "k8s/service.yaml"
+        KUBECONFIG_CREDENTIAL_ID = 'eks-kubeconfig'       // ID Secret File Kubeconfig
+    }
+
+    stages {
+        // Đây là Stage Kiểm tra chất lượng (có thể thêm phê duyệt thủ công ở đây)
+        stage('1. Quality Gate') {
+            steps {
+                echo "-> Kiểm tra chất lượng: Đảm bảo CI đã thành công."
+                // Ví dụ: Thêm bước kiểm tra bảo mật/phê duyệt thủ công ở đây
+                input(message: "Bấm 'Proceed' để triển khai phiên bản ${IMAGE_TAG} lên EKS.", ok: 'Proceed')
+                echo "Quality Gate đã qua. Bắt đầu triển khai."
+            }
+        }
+
+        stage('2. Deploy to AWS EKS') {
+            steps {
+                // Sử dụng Kubeconfig Secret File đã lưu trong Jenkins
+                withCredentials([file(credentialsId: KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG_FILE')]) {
+                    sh """
+                      echo "-> Đang triển khai ${IMAGE_REPO}:${IMAGE_TAG} lên EKS Cluster..."
+                      export KUBECONFIG=$KUBECONFIG_FILE
+                      
+                      // 1. Cập nhật image tag trong file deployment.yaml
+                      // Thay thế tag cũ bằng tag mới/latest
+                      sed -i 's|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|' ${K8S_DEPLOY_FILE}
+                      
+                      // 2. Áp dụng manifests lên EKS (tạo/cập nhật Deployment và Service)
+                      kubectl apply -f ${K8S_DEPLOY_FILE}
+                      kubectl apply -f ${K8S_SERVICE_FILE}
+                      
+                      // 3. Chờ Deployment Rollout hoàn tất
+                      kubectl rollout status deployment/myservice-ui
+                      echo "Triển khai (Deployment) thành công lên EKS."
+                    """
+                }
+            }
+        }
+    }
+}

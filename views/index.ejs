@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= serviceName %></title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 20px;
+background-color: #f4f4f9;
+color: #333;
+text-align: center;
+}
+.container {
+max-width: 600px;
+margin: 50px auto;
+padding: 30px;
+background: white;
+border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+h1 {
+color: #007bff;
+margin-bottom: 10px;
+}
+p {
+font-size: 1.1em;
+color: #555;
+}
+.info {
+margin-top: 20px;
+padding-top: 15px;
+border-top: 1px solid #eee;
+font-size: 0.9em;
+color: #777;
+}
+.links a {
+margin: 0 10px;
+color: #28a745;
+text-decoration: none;
+font-weight: bold;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1><%= serviceName %></h1>
+<p><%= message %></p>
+<div class="links">
+<a href="/health">Health Check</a>
+<a href="/metrics">Prometheus Metrics</a>
+</div>
+<div class="info">
+Service successfully running on AWS EKS via CI/CD Pipeline.
+
+
+
+
+
+Last rendered: <%= deploymentTime %>
+</div>
+</div>
+</body>
+</html>
