@@ -39,23 +39,23 @@ pipeline {
 
         stage('4. Push Docker Image to Docker Hub') {
             steps {
-                // Sử dụng credentials Docker Hub đã lưu trong Jenkins
                 withCredentials([usernamePassword(
                     credentialsId: DOCKERHUB_CREDENTIAL_ID, 
                     usernameVariable: 'DOCKER_USER', 
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh """
-                      echo "-> Đang đăng nhập Docker Hub và đẩy Image..."
-                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin ${REGISTRY_URL}
-                      
-                      // Đẩy image với tag phiên bản (1.0.X)
-                      docker push ${IMAGE_REPO}:${IMAGE_TAG}
-                      
-                      // Gắn thêm tag 'latest' cho image này và đẩy lên
-                      docker tag ${IMAGE_REPO}:${IMAGE_TAG} ${IMAGE_REPO}:latest
-                      docker push ${IMAGE_REPO}:latest
-                      echo "Image ${IMAGE_TAG} đã được đẩy lên Docker Hub."
+                    echo "-> Đang đăng nhập Docker Hub và đẩy Image..."
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin ${REGISTRY_URL}
+                    
+                    # Đẩy image với tag phiên bản (1.0.X)
+                    docker push ${IMAGE_REPO}:${IMAGE_TAG}
+                    
+                    # Gắn thêm tag latest
+                    docker tag ${IMAGE_REPO}:${IMAGE_TAG} ${IMAGE_REPO}:latest
+                    docker push ${IMAGE_REPO}:latest
+
+                    echo "Image ${IMAGE_TAG} đã được đẩy lên Docker Hub."
                     """
                 }
             }
