@@ -35,7 +35,7 @@ pipeline {
                       kubectl apply -f ${K8S_SERVICE_FILE}
                       
                       # 4. Chờ Deployment Rollout hoàn tất
-                      kubectl rollout status deployment/myservice-ui
+                      kubectl rollout status deployment/myservice
                       echo "Triển khai (Deployment) thành công lên EKS!"
                     """
                 }
