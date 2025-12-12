@@ -30,11 +30,15 @@ pipeline {
                       # 2. Cập nhật image tag trong file deployment.yaml
                       sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" ${K8S_DEPLOY_FILE}
                       
-                      # 3. Áp dụng manifests lên EKS
-                      kubectl apply -f ${K8S_DEPLOY_FILE}
+                      # 3. Áp dụng manifests lên EKS (tạo/cập nhật Service)
                       kubectl apply -f ${K8S_SERVICE_FILE}
+                      kubectl apply -f ${K8S_DEPLOY_FILE}
                       
-                      # 4. Chờ Deployment Rollout hoàn tất
+                      # 4. BẮT BUỘC KHỞI ĐỘNG LẠI Deployment để đảm bảo Rollout mới
+                      # Sử dụng tên Deployment chính xác là 'myservice'
+                      kubectl rollout restart deployment/myservice
+                      
+                      # 5. Chờ Deployment Rollout hoàn tất
                       kubectl rollout status deployment/myservice
                       echo "Triển khai (Deployment) thành công lên EKS!"
                     """
