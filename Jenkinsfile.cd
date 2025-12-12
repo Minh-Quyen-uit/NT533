@@ -3,47 +3,40 @@ pipeline {
 
     environment {
         IMAGE_REPO   = "minhquyen1325/nt533group2"
-        IMAGE_TAG    = "latest"
+        IMAGE_TAG    = "latest" 
         K8S_DEPLOY_FILE = "k8s/deployment.yaml"
         K8S_SERVICE_FILE = "k8s/service.yaml"
-        KUBECONFIG_CREDENTIAL_ID = 'eks-kubeconfig'
+        KUBECONFIG_CREDENTIAL_ID = 'eks-kubeconfig'     
     }
 
     stages {
-
-        stage('1. Quality Gate') {
-            steps {
-                echo "-> Kiểm tra chất lượng: Đảm bảo CI đã thành công."
-                input(message: "Bấm 'Proceed' để triển khai phiên bản ${IMAGE_TAG} lên EKS.", ok: 'Proceed')
-                echo "Quality Gate đã qua. Bắt đầu triển khai."
-            }
-        }
-
-        stage('2. Deploy to AWS EKS') {
+        stage('1. Deploy to AWS EKS') {
             steps {
                 withCredentials([
                     file(credentialsId: KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG_FILE'),
-                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'), 
                     string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
                 ]) {
 
                     sh """
-                    echo "-> Triển khai ${IMAGE_REPO}:${IMAGE_TAG} lên AWS EKS..."
+                      echo "-> Bắt đầu Triển khai tự động ${IMAGE_REPO}:${IMAGE_TAG} lên EKS Cluster..."
+                      
+                      # 1. Export các biến môi trường cần thiết
+                      export KUBECONFIG=$KUBECONFIG_FILE
+                      export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                      export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                      export AWS_REGION=us-east-1
 
-                    export KUBECONFIG=$KUBECONFIG_FILE
-                    export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                    export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                    export AWS_REGION=us-east-1
-
-                    # Cập nhật image
-                    sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" ${K8S_DEPLOY_FILE}
-
-                    # Apply lên EKS
-                    kubectl apply -f ${K8S_DEPLOY_FILE}
-                    kubectl apply -f ${K8S_SERVICE_FILE}
-
-                    kubectl rollout status deployment/myservice
-                    echo "[OK] Triển khai thành công lên EKS!"
+                      # 2. Cập nhật image tag trong file deployment.yaml
+                      sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" ${K8S_DEPLOY_FILE}
+                      
+                      # 3. Áp dụng manifests lên EKS
+                      kubectl apply -f ${K8S_DEPLOY_FILE}
+                      kubectl apply -f ${K8S_SERVICE_FILE}
+                      
+                      # 4. Chờ Deployment Rollout hoàn tất
+                      kubectl rollout status deployment/myservice-ui
+                      echo "Triển khai (Deployment) thành công lên EKS!"
                     """
                 }
             }
