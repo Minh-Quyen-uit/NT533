@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Group 2 | Nguyễn Minh Quyền và Bùi Đặng Nhật Nguyên</title>
+  <title><%= serviceName %></title>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
@@ -37,7 +37,6 @@
       font-size: 26px;
       font-weight: 800;
       color: #00e5ff;
-      letter-spacing: -1px;
     }
 
     .hero {
@@ -47,36 +46,23 @@
     }
 
     .hero h1 {
-      font-size: 58px;
+      font-size: 54px;
       font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .hero p {
       font-size: 22px;
-      opacity: 0.8;
+      opacity: 0.85;
       max-width: 800px;
       margin: auto;
-      margin-bottom: 40px;
       line-height: 1.7;
     }
 
-    .btn-primary {
-      background: #00e5ff;
-      color: #000;
-      padding: 16px 35px;
-      border-radius: 12px;
-      font-size: 20px;
-      font-weight: 700;
-      text-decoration: none;
-      transition: 0.3s;
-      display: inline-block;
-    }
-
-    .btn-primary:hover {
-      transform: scale(1.07);
-      background: #00bcd4;
+    .meta {
+      margin-top: 20px;
+      font-size: 15px;
+      opacity: 0.6;
     }
 
     .section {
@@ -86,42 +72,41 @@
     }
 
     .section h2 {
-      font-size: 40px;
+      font-size: 36px;
       font-weight: 800;
       margin-bottom: 25px;
       color: #00e5ff;
     }
 
-    .about-box {
+    .box {
       background: rgba(255,255,255,0.04);
       padding: 35px;
       border-radius: 15px;
       border: 1px solid rgba(255,255,255,0.1);
+      font-size: 19px;
       line-height: 1.8;
-      font-size: 20px;
     }
 
-    .tech-list {
+    .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 25px;
       margin-top: 20px;
     }
 
-    .tech-item {
+    .item {
       background: rgba(255,255,255,0.04);
       padding: 25px;
       border-radius: 12px;
       text-align: center;
-      font-size: 20px;
       font-weight: 600;
       border: 1px solid rgba(255,255,255,0.08);
       transition: 0.3s;
     }
 
-    .tech-item:hover {
-      transform: translateY(-7px);
-      background: rgba(0,229,255,0.1);
+    .item:hover {
+      transform: translateY(-6px);
+      background: rgba(0,229,255,0.12);
       border-color: #00e5ff;
     }
 
@@ -130,7 +115,13 @@
       text-align: center;
       opacity: 0.6;
       margin-top: 80px;
-      font-size: 16px;
+      font-size: 15px;
+    }
+
+    code {
+      background: rgba(255,255,255,0.1);
+      padding: 4px 8px;
+      border-radius: 6px;
     }
   </style>
 </head>
@@ -138,50 +129,47 @@
 <body>
 
 <header>
-  <h2>Group 2</h2>
+  <h2><%= serviceName %></h2>
 </header>
 
-<!-- HERO SECTION -->
+<!-- HERO -->
 <section class="hero">
-  <h1>DevOps Projects <br>Automation</h1>
-  <p>
-    A fully automated CI/CD cloud-native solution built using
-    Docker, GitLab CI/CD, and Amazon EKS with Prometheus monitoring.
-  </p>
-
-  <a href="#project" class="btn-primary">Explore Project</a>
-</section>
-
-<!-- PROJECT SECTION -->
-<section class="section" id="project">
-  <h2>🚀 Project Overview</h2>
-  <div class="about-box">
-    This demo application demonstrates a complete CI/CD pipeline using:
-    <br><br>
-    • GitLab CI/CD for automated build & deployment<br>
-    • Docker for containerization<br>
-    • Amazon EKS Kubernetes for high availability<br>
-    • Prometheus for metrics & monitoring<br>
-    • Secure Node.js microservice
+  <h1>Cloud-Native Microservice</h1>
+  <p><%= message %></p>
+  <div class="meta">
+    Deployment time: <%= deploymentTime %>
   </div>
 </section>
 
-<!-- TECHNOLOGIES -->
+<!-- SERVICE INFO -->
 <section class="section">
-  <h2>🛠 Technologies Used</h2>
+  <h2>📦 Service Endpoints</h2>
+  <div class="box">
+    <strong>Health Checks</strong><br>
+    • <code>/health</code><br>
+    • <code>/healthz</code><br>
+    • <code>/readyz</code><br><br>
 
-  <div class="tech-list">
-    <div class="tech-item">Node.js (Express)</div>
-    <div class="tech-item">Prometheus Metrics</div>
-    <div class="tech-item">Docker</div>
-    <div class="tech-item">GitLab CI/CD</div>
-    <div class="tech-item">AWS EKS</div>
-    <div class="tech-item">Kubernetes</div>
+    <strong>Monitoring</strong><br>
+    • <code>/metrics</code> (Prometheus)
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="section">
+  <h2>🛠 Technology Stack</h2>
+  <div class="grid">
+    <div class="item">Node.js + Express</div>
+    <div class="item">Helmet Security</div>
+    <div class="item">Prometheus Metrics</div>
+    <div class="item">Docker</div>
+    <div class="item">Kubernetes (EKS)</div>
+    <div class="item">GitLab CI/CD</div>
   </div>
 </section>
 
 <footer>
-  © 2025 HLALI CLOUD — Cloud-Native DevOps Project
+  © 2025 — Secure, Observable, Cloud-Native Service
 </footer>
 
 </body>
