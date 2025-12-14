@@ -1,10 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Tên Deployment. Đảm bảo Jenkinsfile.cd sử dụng tên này (myservice).
   name: myservice
   labels:
     app: myservice
 spec:
+  # Số lượng Pods muốn chạy
   replicas: 2
   selector:
     matchLabels:
@@ -14,24 +16,30 @@ spec:
       labels:
         app: myservice
       annotations:
+        # Cấu hình Prometheus để scrape metrics từ Pod
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
         prometheus.io/port: "3000"
     spec:
       containers:
         - name: myservice-container
+          # Tag mặc định, Jenkinsfile sẽ thay thế bằng tag mới nhất từ Docker Hub
           image: docker.io/minhquyen1325/nt533group2:latest 
           ports:
             - containerPort: 3000
           
+          # >>> Cấu hình BẮT BUỘC để Khắc phục lỗi Cache: <<<
+          # Luôn yêu cầu Worker Node kéo Image từ Registry, không dùng cache cục bộ.
           imagePullPolicy: Always 
           
+          # Kiểm tra xem Container đã sẵn sàng nhận traffic chưa
           readinessProbe:
             httpGet:
               path: /
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
+          # Kiểm tra xem Container có đang chạy và hoạt động không
           livenessProbe:
             httpGet:
               path: /
