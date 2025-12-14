@@ -33,7 +33,8 @@ pipeline {
         stage('3. Build Docker Image') {
             steps {
                 echo "-> Xây dựng Docker Image với tag: ${IMAGE_TAG}"
-                sh "docker build -t ${IMAGE_REPO}:${IMAGE_TAG} ."
+                // >>> ĐÃ FIX: Sử dụng --no-cache để buộc Docker Build lại tất cả các lớp <<<
+                sh "docker build --no-cache -t ${IMAGE_REPO}:${IMAGE_TAG} ." 
             }
         }
 
