@@ -136,7 +136,7 @@ app.get('/', (req, res) => {
 
   res.render('index', {
     serviceName: 'My Awesome EKS Microservice',
-    message: 'Welcome! This service is running and monitored.',
+    message: 'Welcome! This service is running and monitored. hello quyền',
     deploymentTime: new Date().toLocaleString()
   });
 
