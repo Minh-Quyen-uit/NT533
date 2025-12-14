@@ -1,122 +1,67 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= serviceName %></title>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      background: #0b0f1a;
-      color: #ffffff;
-    }
-
-    header {
-      padding: 25px 60px;
-      background: rgba(255,255,255,0.03);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    header h2 {
-      color: #00e5ff;
-      font-size: 26px;
-      font-weight: 800;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 100px 20px;
-      background: linear-gradient(135deg, #0b0f1a, #10182f);
-    }
-
-    .hero h1 {
-      font-size: 56px;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .hero p {
-      font-size: 22px;
-      opacity: 0.85;
-      max-width: 850px;
-      margin: auto;
-      line-height: 1.7;
-    }
-
-    .meta {
-      margin-top: 20px;
-      font-size: 15px;
-      opacity: 0.6;
-    }
-
-    .section {
-      padding: 80px 60px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .box {
-      background: rgba(255,255,255,0.04);
-      padding: 35px;
-      border-radius: 15px;
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 19px;
-      line-height: 1.8;
-    }
-
-    footer {
-      padding: 40px;
-      text-align: center;
-      opacity: 0.6;
-      margin-top: 80px;
-      font-size: 15px;
-    }
-
-    code {
-      background: rgba(255,255,255,0.1);
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= serviceName %></title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 20px;
+background-color: #f4f4f9;
+color: #333;
+text-align: center;
+}
+.container {
+max-width: 600px;
+margin: 50px auto;
+padding: 30px;
+background: white;
+border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+h1 {
+color: #007bff;
+margin-bottom: 10px;
+}
+p {
+font-size: 1.1em;
+color: #555;
+}
+.info {
+margin-top: 20px;
+padding-top: 15px;
+border-top: 1px solid #eee;
+font-size: 0.9em;
+color: #777;
+}
+.links a {
+margin: 0 10px;
+color: #28a745;
+text-decoration: none;
+font-weight: bold;
+}
+</style>
 </head>
-
 <body>
+<div class="container">
+<h1><%= serviceName %></h1>
+<p><%= message %></p>
+<div class="links">
+<a href="/health">Health Check</a>
+<a href="/metrics">Prometheus Metrics</a>
+</div>
+<div class="info">
+Service successfully running on AWS EKS via CI/CD Pipeline.
 
-<header>
-  <h2><%= serviceName %></h2>
-</header>
 
-<section class="hero">
-  <h1>Cloud-Native Node.js Microservice</h1>
-  <p><%= message %></p>
-  <div class="meta">
-    Deployment time: <%= deploymentTime %>
-  </div>
-</section>
 
-<section class="section">
-  <div class="box">
-    <strong>Available Endpoints</strong><br><br>
-    • <code>/</code> — Homepage<br>
-    • <code>/health</code> — Basic health check<br>
-    • <code>/healthz</code> — Liveness probe<br>
-    • <code>/readyz</code> — Readiness probe<br>
-    • <code>/metrics</code> — Prometheus metrics
-  </div>
-</section>
 
-<footer>
-  © 2025 — Secure • Observable • Cloud-Native
-</footer>
 
+Last rendered: <%= deploymentTime %>
+</div>
+</div>
 </body>
-</html>
+</html> hay sửa lại file index.ejs cho phù hợp với file index.js
