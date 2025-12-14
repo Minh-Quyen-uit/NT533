@@ -19,16 +19,22 @@ spec:
         prometheus.io/port: "3000"
     spec:
       containers:
-        - name: myservice
-          # đổi khúc này sau
-          image: docker.io/minhquyen1325/nt533group2:1.0.0
+        - name: myservice-container
+          image: docker.io/minhquyen1325/nt533group2:latest 
           ports:
             - containerPort: 3000
+          
+          imagePullPolicy: Always 
+          
           readinessProbe:
             httpGet:
               path: /
               port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /
               port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
